@@ -71,9 +71,15 @@ def process_data(comp_list, elec_list):
 
     df_test = pd.DataFrame({'Material composition': comp_list})
 
-    X, y = ElementalFeatureGenerator(featurize_df=df_test['Material composition'],
+    # Try this both ways depending on mastml version used.
+    try:
+        X, y = ElementalFeatureGenerator(composition_df=df_test['Material composition'],
                                     feature_types=['composition_avg', 'arithmetic_avg', 'max', 'min','difference'],
                                     remove_constant_columns=False).evaluate(X=X, y=y, savepath=os.getcwd(), make_new_dir=False)
+    except:
+        X, y = ElementalFeatureGenerator(featurize_df=df_test['Material composition'],
+                                         feature_types=['composition_avg', 'arithmetic_avg', 'max', 'min',
+                                                        'difference'], remove_constant_columns=False).evaluate(X=X, y=y, savepath=os.getcwd(), make_new_dir=False)
 
     df_test = pd.concat([df_test, X], axis=1)
 
