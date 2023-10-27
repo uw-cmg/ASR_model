@@ -14,7 +14,7 @@ def get_cost(comp_list):
     return costs
 
 def get_stability(df_test):
-    d = 'Stability_model'
+    d = 'ASR_model/Stability_model'
     scaler = joblib.load(os.path.join(d, 'StandardScaler.pkl'))
     model = joblib.load(os.path.join(d, 'RandomForestRegressor.pkl'))
     df_features = pd.read_csv(os.path.join(d, 'X_train.csv'))
@@ -27,7 +27,7 @@ def get_stability(df_test):
     return stabilities
 
 def get_barrier(df_test):
-    d = 'Barrier_model'
+    d = 'ASR_model/Barrier_model'
     scaler = joblib.load(os.path.join(d, 'StandardScaler.pkl'))
     model = joblib.load(os.path.join(d, 'RandomForestRegressor.pkl'))
     df_features = pd.read_csv(os.path.join(d, 'X_train.csv'))
@@ -40,7 +40,7 @@ def get_barrier(df_test):
     return barriers
 
 def get_asr(df_test):
-    d = 'ASR_model'
+    d = 'ASR_model/ASR_model'
     scaler = joblib.load(os.path.join(d, 'StandardScaler.pkl'))
     model = joblib.load(os.path.join(d, 'RandomForestRegressor.pkl'))
     df_features = pd.read_csv(os.path.join(d, 'X_train.csv'))
