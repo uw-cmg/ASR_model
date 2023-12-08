@@ -39,8 +39,8 @@ def get_barrier(df_test):
 
     return barriers
 
-def get_asr(df_test):
-    d = 'ASR_model/ASR_model'
+def get_asr_rf(df_test):
+    d = 'ASR_model/ASR_RF_model'
     scaler = joblib.load(os.path.join(d, 'StandardScaler.pkl'))
     model = joblib.load(os.path.join(d, 'RandomForestRegressor.pkl'))
     df_features = pd.read_csv(os.path.join(d, 'X_train.csv'))
@@ -55,6 +55,32 @@ def get_asr(df_test):
     # Get ebars and recalibrate them
     a = 0.42824232546669644
     b = 0.36341790743237223
+    errs_list = list()
+    for i, x in X_ASR.iterrows():
+        preds_list = list()
+        for pred in model.model.estimators_:
+            preds_list.append(pred.predict(np.array(x).reshape(1, -1))[0])
+        errs_list.append(np.std(preds_list))
+    asr_ebars = a * np.array(errs_list) + b
+
+    return asrs, asr_ebars
+
+def get_asr_gpr(df_test):
+    d = 'ASR_model/ASR_GPR_model'
+    scaler = joblib.load(os.path.join(d, 'StandardScaler.pkl'))
+    model = joblib.load(os.path.join(d, 'GaussianProcessRegressor.pkl'))
+    df_features = pd.read_csv(os.path.join(d, 'X_train.csv'))
+
+    features = df_features.columns.tolist()
+    df_test = df_test[features]
+
+    X_ASR = scaler.transform(df_test)
+
+    asrs = model.predict(X_ASR)
+
+    # Get ebars and recalibrate them
+    a = 1.18033360971506
+    b = -0.0660773887574826
     errs_list = list()
     for i, x in X_ASR.iterrows():
         preds_list = list()
@@ -136,15 +162,22 @@ def make_predictions(comp_list, elec_list):
     barriers = get_barrier(df_test)
 
     df_test['ML pred ASR barrier (eV)'] = barriers
-    asrs, asr_ebars = get_asr(df_test)
+
+    # Get the ML (RF) predicted ASRs
+    asrs, asr_ebars = get_asr_rf(df_test)
+
+    # Get the ML (GPR) predicted ASRs
+    asrs_gpr, asr_ebars_gpr = get_asr_gpr(df_test)
 
     pred_dict = {'Compositions': comp_list,
                  'Electrolytes': elec_list,
                  'Cost ($/kg)': costs,
                  'Stability @ 500C (meV/atom)': stabilities,
                  'ASR barrier (eV)': barriers,
-                 'log ASR at 500C (Ohm-cm2)': asrs,
-                 'log ASR error (Ohm-cm2)': asr_ebars}
+                 'log ASR at 500C (Ohm-cm2) (RF)': asrs,
+                 'log ASR error (Ohm-cm2) (RF)': asr_ebars,
+                 'log ASR at 500C (Ohm-cm2) (GPR)': asrs_gpr,
+                 'log ASR error (Ohm-cm2) (GPR)': asr_ebars_gpr}
 
     return pd.DataFrame(pred_dict)
 
