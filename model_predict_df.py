@@ -76,17 +76,12 @@ def get_asr_gpr(df_test):
 
     X_ASR = scaler.transform(df_test)
 
-    asrs = model.predict(X_ASR)
+    asrs, errs_list = model.model.predict(X_ASR, return_std=True)
 
     # Get ebars and recalibrate them
     a = 1.18033360971506
     b = -0.0660773887574826
-    errs_list = list()
-    for i, x in X_ASR.iterrows():
-        preds_list = list()
-        for pred in model.model.estimators_:
-            preds_list.append(pred.predict(np.array(x).reshape(1, -1))[0])
-        errs_list.append(np.std(preds_list))
+
     asr_ebars = a * np.array(errs_list) + b
 
     return asrs, asr_ebars
