@@ -1,6 +1,6 @@
 # Machine learning model of perovskite area specific resistance (ASR)
 
-Random forest models to predict the stability and ASR for perovskite oxides useful for oxygen reduction and evolution catalysis
+Random forest and Gaussian process regression models to predict the stability and ASR for perovskite oxides useful for oxygen reduction and evolution catalysis
 
 ## The model can be run on Google Colab:
 
