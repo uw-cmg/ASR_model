@@ -8,5 +8,5 @@ Random forest and Gaussian process regression models to predict the stability an
 
 ## If you find this model useful, please cite the original reference:
 
-Jacobs, R., Liu, J., Abernathy, H., Morgan, D. "Machine Learning Design of Perovskite Catalytic Properties", submitted (2023).
+Jacobs, R., Liu, J., Abernathy, H., Morgan, D. "Machine Learning Design of Perovskite Catalytic Properties", Advanced Energy Materials 2303684 (2024). https://doi.org/10.1002/aenm.202303684
 
